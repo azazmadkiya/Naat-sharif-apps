@@ -107,6 +107,8 @@ class NaatViewModel(application: Application) : AndroidViewModel(application) {
     val allApprovedNaats: StateFlow<List<NaatEntity>> = repository.approvedNaats
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val naats: StateFlow<List<NaatEntity>> = allApprovedNaats
+
     val favoriteNaats: StateFlow<List<NaatEntity>> = repository.favoriteNaats
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -344,6 +346,30 @@ class NaatViewModel(application: Application) : AndroidViewModel(application) {
             repository.softDelete(naatId)
             recordLog("Moved Kalam to Trash", "ID: $naatId")
         }
+    }
+
+    fun softDeleteNaat(naatId: String) = softDelete(naatId)
+
+    fun rejectNaat(naatId: String) = softDelete(naatId)
+
+    fun addNaat(title: String, artist: String, category: String, lyrics: String, audioUrl: String = "", onResult: (Boolean, String) -> Unit = { _, _ -> }) {
+        val newEntity = NaatEntity(
+            id = java.util.UUID.randomUUID().toString(),
+            titleHindi = title,
+            titleGujarati = "",
+            titleEnglish = title,
+            lyricsHindi = lyrics,
+            lyricsGujarati = "",
+            lyricsEnglish = lyrics,
+            category = category,
+            poet = artist.ifBlank { "Traditional / Kalaam" },
+            audioUrl = audioUrl
+        )
+        saveNaat(newEntity, onDuplicate = {
+            onResult(false, "This Kalam already exists!")
+        }, onComplete = {
+            onResult(true, "Kalam added successfully!")
+        })
     }
 
     fun restoreFromTrash(naatId: String) {
