@@ -1,0 +1,6 @@
+{
+  "name": "Naat Sharif",
+  "description": "A comprehensive Naat Sharif application with Super Admin and Admin portals, approvals, rejections, soft and permanent deletions, user management, and cloud sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

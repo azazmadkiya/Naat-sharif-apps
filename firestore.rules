@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Naats collection: 
+    // - Any user can read and authenticated/admin can write
+    match /naats/{naatId} {
+      allow read, write: if true;
+    }
+
+    // Users collection and subcollections (such as user-specific favorites):
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    match /users/{userId}/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
